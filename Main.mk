@@ -33,10 +33,6 @@ include $(SM_VENDOR)/product/sm_products.mk
 include $(SM_VENDOR)/device/sm_devices.mk
 include $(SM_VENDOR)/configs/sm.mk
 
-# Include Firefox browser in all ROM builds.
-PRODUCT_PACKAGES += FireFox-arm-SM4.9
-$(call inherit-product, $(SM_VENDOR)/prebuilts/system/lib/armeabi-v7a/arm.mk)
-
 # SuperSU for aosp based ROMs.
 ifeq ($(strip $(TARGET_BASE_ROM)),aosp)
   include $(SM_VENDOR)/prebuilts/SuperSU/supersu.mk

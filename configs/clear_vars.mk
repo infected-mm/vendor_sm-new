@@ -37,10 +37,6 @@ $(shell unset KERNEL_BINARY_IMAGE)
 $(shell unset KERNEL_DEFCONFIG)
 $(shell unset DISABLE_O3_KERNEL)
 
-ifneq ($(filter %hammerhead,$(TARGET_PRODUCT)),)
-  $(shell unset CONFIG_MACH_MSM8974_HAMMERHEAD_STRICT_ALIASING)
-endif
-
-ifneq ($(filter %mako,$(TARGET_PRODUCT)),)
-  $(shell unset CONFIG_MACH_MSM8960_MAKO_STRICT_ALIASING)
+ifneq ($(filter %z3,$(TARGET_PRODUCT)),)
+  $(shell unset CONFIG_MACH_MSM8974_Z3_STRICT_ALIASING)
 endif

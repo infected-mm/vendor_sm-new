@@ -13,37 +13,13 @@
 # limitations under the License.
 #
 
-ifneq ($(filter flounder,$(TARGET_DEVICE)),)
-  include $(SM_VENDOR)/device/sm_flounder.mk
-  LOCAL_ARCH := arm64
-endif
-
-ifneq ($(filter hammerhead,$(TARGET_DEVICE)),)
-  include $(SM_VENDOR)/device/sm_hammerhead.mk
-  ENABLE_GCC_DEFAULTS := true
+ifneq ($(filter z3,$(TARGET_DEVICE)),)
+  include $(SM_VENDOR)/device/sm_z3.mk
   LOCAL_ARCH := arm
 endif
 
-ifneq ($(filter mako,$(TARGET_DEVICE)),)
-  include $(SM_VENDOR)/device/sm_mako.mk
-  ENABLE_GCC_DEFAULTS := true
-  LOCAL_ARCH := arm
-endif
-
-ifneq ($(filter shamu,$(TARGET_DEVICE)),)
-  include $(SM_VENDOR)/device/sm_shamu.mk
-  ENABLE_GCC_DEFAULTS := true
-  LOCAL_ARCH := arm
-endif
-
-ifneq ($(filter bacon,$(TARGET_DEVICE)),)
-  include $(SM_VENDOR)/device/sm_bacon.mk
-  ENABLE_GCC_DEFAULTS := true
-  LOCAL_ARCH := arm
-endif
-
-ifneq ($(filter baconcaf,$(TARGET_DEVICE)),)
-  include $(SM_VENDOR)/device/sm_bacon.mk
+ifneq ($(filter awifi,$(TARGET_DEVICE)),)
+  include $(SM_VENDOR)/device/sm_awifi.mk
   ENABLE_GCC_DEFAULTS := true
   LOCAL_ARCH := arm
 endif
