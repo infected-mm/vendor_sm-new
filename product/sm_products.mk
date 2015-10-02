@@ -18,6 +18,10 @@ ifneq ($(filter %z3,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := z3
 endif
 
+ifneq ($(filter %huashan,$(TARGET_PRODUCT)),)
+  TARGET_DEVICE := huashan
+endif
+
 ifneq ($(filter %awifi,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := awifi
 endif

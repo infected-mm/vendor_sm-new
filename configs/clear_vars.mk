@@ -40,3 +40,7 @@ $(shell unset DISABLE_O3_KERNEL)
 ifneq ($(filter %z3,$(TARGET_PRODUCT)),)
   $(shell unset CONFIG_MACH_MSM8974_Z3_STRICT_ALIASING)
 endif
+
+ifneq ($(filter %huashan,$(TARGET_PRODUCT)),)
+  $(shell unset CONFIG_MACH_MSM8960_HUASHAN_STRICT_ALIASING)
+endif
