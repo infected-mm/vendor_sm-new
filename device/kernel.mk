@@ -6,8 +6,8 @@
 # Original Author Jameson Williams jameson.h.williams@intel.com
 
 ifneq ($(filter %huashan,$(TARGET_PRODUCT)),)
-  KERNEL_DIR := kernel/sony/msm8960
-  KERNEL_BINARY_IMAGE := zImage-dtb
+  KERNEL_DIR := kernel/sony/msm8x60
+  KERNEL_BINARY_IMAGE := zImage
   ifneq ($(filter cm% candy5% pa%,$(TARGET_PRODUCT)),)
     KERNEL_DEFCONFIG := cm_viskan_huashan_defconfig
   endif
