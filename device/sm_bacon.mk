@@ -15,18 +15,6 @@
 
 # Sabermod configs
 TARGET_SM_KERNEL := 4.9
-BACON_THREADS := 4
-PRODUCT_THREADS := $(BACON_THREADS)
+TARGET_SM_AND := 4.9
 LOCAL_STRICT_ALIASING := false
 export LOCAL_O3 := true
-
-GRAPHITE_KERNEL_FLAGS := \
-  -fopenmp
-
-# General flags for gcc 4.9 to allow compilation to complete.
-MAYBE_UNINITIALIZED := \
-  hwcomposer.msm8974
-
-# Extra SaberMod GCC C flags for arch target and Kernel
-EXTRA_SABERMOD_GCC_VECTORIZE := \
-  -mvectorize-with-neon-quad
