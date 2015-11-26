@@ -22,20 +22,20 @@
 ifdef TARGET_SM_AND
 export TARGET_SM_AND := $(TARGET_SM_AND)
 else
-  $(warning =====================================================================)
+  $(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
   $(warning TARGET_SM_AND not defined.)
   $(warning Defaulting to gcc 4.9 for ROM.)
-  $(warning =====================================================================)
+  $(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
 export TARGET_SM_AND := 4.9
 endif
 
 ifdef TARGET_SM_KERNEL
   export TARGET_SM_KERNEL := $(TARGET_SM_KERNEL)
 else
-  $(warning =====================================================================)
+  $(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
   $(warning TARGET_SM_KERNEL not defined.)
   $(warning Defaulting to ROM gcc version $(TARGET_SM_AND).)
-  $(warning =====================================================================)
+  $(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
   export TARGET_SM_KERNEL := $(TARGET_SM_AND)
 endif
 
@@ -43,20 +43,19 @@ endif
 export GCC_COLORS := 'error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 ifndef LOCAL_ARCH
-  $(warning =====================================================================)
+  $(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
   $(warning Can not determine arch type, defaulting to arm)
   $(warning  To change this set LOCAL_ARCH :=)
-  $(warning =====================================================================)
+  $(warning !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
   LOCAL_ARCH := arm
 endif
 
 # Enable SaberMod ARM Mode for all arm builds.
 ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
-  ENABLE_SABERMOD_ARM_MODE := true
-endif
-
-ifeq ($(strip $(ENABLE_SABERMOD_ARM_MODE)),true)
-  OPT4 := [gcc-arm]
+  ifneq ($(ENABLE_SABERMOD_ARM_MODE),false)
+    ENABLE_SABERMOD_ARM_MODE := true
+    OPT4 := [gcc-arm]
+  endif
 endif
 
 ifeq ($(strip $(LOCAL_ARCH)),arm)
@@ -106,15 +105,36 @@ FORCE_DISABLE_DEBUGGING := true
 ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
   ifeq ($(strip $(LOCAL_ARCH)),arm)
 
-export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-$(HOST_OS)-androideabi-$(TARGET_SM_AND)/lib
+    ifneq (,$(filter 5.% 6.%,$(TARGET_SM_AND)))
+      ifndef TARGET_SECOND_SM_AND
+
+        # Needs required 4.9 toolchain libs for hybrid gcc mode.
+        TARGET_SECOND_SM_AND := 4.9
+      endif
+      ifndef TARGET_NDK_VERSION
+
+        # Default to GCC 4.9 version for the NDK libs and includes.
+        TARGET_NDK_VERSION := 4.9
+      endif
+    endif
+
+ifeq (,$(filter 5.% 6.%,$(TARGET_SM_AND)))
+export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/lib
+export TARGET_ARCH_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/include
+else
+export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/lib
+export TARGET_ARCH_SECOND_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SECOND_SM_AND)/lib
+export TARGET_ARCH_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/include
+export TARGET_ARCH_SECOND_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SECOND_SM_AND)/include
+endif
 
     # Path to ROM toolchain
-    SM_AND_PATH := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-$(HOST_OS)-androideabi-$(TARGET_SM_AND)
-    SM_AND := $(shell $(SM_AND_PATH)/bin/arm-$(HOST_OS)-androideabi-gcc --version)
+    SM_AND_PATH := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)
+    SM_AND := $(shell $(SM_AND_PATH)/bin/arm-linux-androideabi-gcc --version)
 
     # Find strings in version info
     ifneq ($(filter %sabermod,$(SM_AND)),)
-      SM_AND_NAME := $(filter %sabermod,$(SM_AND))
+export SM_AND_NAME := $(filter %sabermod,$(SM_AND))
       SM_AND_DATE := $(filter 20140% 20141% 20150% 20151%,$(SM_AND))
       SM_AND_STATUS := $(filter (release) (prerelease) (experimental),$(SM_AND))
       SM_AND_VERSION := $(SM_AND_NAME)-$(SM_AND_DATE)-$(SM_AND_STATUS)
@@ -122,7 +142,6 @@ export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUIL
       # Write version info to build.prop
       PRODUCT_PROPERTY_OVERRIDES += \
         ro.sm.android=$(SM_AND_VERSION)
-
         
       # Graphite ROM flags
       OPT1 := [graphite]
@@ -219,7 +238,8 @@ export GRAPHITE_UNROLL_AND_JAM_KERNEL := $(filter 5.% 6.%,$(SM_KERNEL_NAME))
           -fstrict-aliasing \
           -Werror=strict-aliasing
       endif
- export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-eabi-$(TARGET_SM_KERNEL)/lib:$(TARGET_ARCH_LIB_PATH)
+export TARGET_ARCH_KERNEL_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-eabi-$(TARGET_SM_KERNEL)/lib
+export TARGET_ARCH_KERNEL_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-eabi-$(TARGET_SM_KERNEL)/include
     endif
 
     # GCC Defaults or CPU Tuning.
@@ -271,15 +291,15 @@ export GRAPHITE_UNROLL_AND_JAM_KERNEL := $(filter 5.% 6.%,$(SM_KERNEL_NAME))
 
   ifeq ($(strip $(LOCAL_ARCH)),arm64)
 
-export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-$(HOST_OS)-android-$(TARGET_SM_AND)/lib
+export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-linux-android-$(TARGET_SM_AND)/lib
 
     # Path to toolchain
-    SM_AND_PATH := prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-$(HOST_OS)-android-$(TARGET_SM_AND)
-    SM_AND := $(shell $(SM_AND_PATH)/bin/aarch64-$(HOST_OS)-android-gcc --version)
+    SM_AND_PATH := prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-linux-android-$(TARGET_SM_AND)
+    SM_AND := $(shell $(SM_AND_PATH)/bin/aarch64-linux-android-gcc --version)
 
     # Find strings in version info
     ifneq ($(filter %sabermod,$(SM_AND)),)
-      SM_AND_NAME := $(filter %sabermod,$(SM_AND))
+export SM_AND_NAME := $(filter %sabermod,$(SM_AND))
       SM_AND_DATE := $(filter 20140% 20141% 20150% 20151%,$(SM_AND))
       SM_AND_STATUS := $(filter (release) (prerelease) (experimental),$(SM_AND))
       SM_AND_VERSION := $(SM_AND_NAME)-$(SM_AND_DATE)-$(SM_AND_STATUS)
@@ -584,7 +604,7 @@ endif
 ifeq ($(strip $(LOCAL_O3)),true)
 
   # Export to the kernel
-export LOCAL_O3 := true
+  export LOCAL_O3 := true
 
   # If -O3 is enabled, force disable on thumb flags.
   # loop optmizations are not really usefull in thumb mode.
@@ -713,10 +733,6 @@ endif
 EXTRA_SABERMOD_HOST_GCC := \
   -ftree-vectorize
 
-ifeq ($(strip $(HOST_OS)),linux)
-  EXTRA_SABERMOD_HOST_GCC := -march=x86-64
-endif
-
 # Extra SaberMod CLANG C flags
 EXTRA_SABERMOD_CLANG := \
   -ftree-vectorize
@@ -736,11 +752,24 @@ else
 endif
 
 # Some flags are only available for certain gcc versions
-export DISABLE_SANITIZE_LEAK := $(filter 4.8%,$(SM_AND))
+export DISABLE_SANITIZE_LEAK := $(filter 4.8%,$(SM_AND_NAME))
 
-OPT3 := [extra]
-OPT6 := [mem-sanitizer]
-OPT7 := [OpenMP]
+# Enable SaberMod extra for all arm builds.
+ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
+  ifneq ($(ENABLE_SABERMOD_EXTRA),false)
+    ENABLE_SABERMOD_EXTRA := true
+    OPT3 := [extra]
+  endif
+endif
+
+# Enable Leak Sanitizer and OpenMP for all arm builds.
+ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
+  ifneq ($(ENABLE_LSAN_OPENMP),false)
+    ENABLE_LSAN_OPENMP := true
+    OPT6 := [lsan]
+    OPT7 := [OpenMP]
+  endif
+endif
 
 # Right all optimization level options to build.prop
 GCC_OPTIMIZATION_LEVELS := $(OPT1)$(OPT2)$(OPT4)$(OPT3)$(OPT6)$(OPT7)$(OPT8)$(OPT5)

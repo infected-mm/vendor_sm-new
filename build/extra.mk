@@ -15,6 +15,7 @@
 # Extra SaberMod C flags for gcc and clang
 # Seperated by arch, clang and host
 
+ifeq ($(strip $(ENABLE_SABERMOD_EXTRA)),true)
 # Target build flags
 ifeq (,$(filter true,$(LOCAL_IS_HOST_MODULE) $(LOCAL_CLANG)))
   ifdef EXTRA_SABERMOD_GCC_VECTORIZE
@@ -57,8 +58,10 @@ ifeq ($(strip $(LOCAL_IS_HOST_MODULE)),true)
     LOCAL_CFLAGS += $(EXTRA_SABERMOD_HOST_GCC)
   endif
 endif
+endif
 
-# Enable the memory leak sanitizer and openmp for all arm targets.
+ifeq ($(strip $(ENABLE_LSAN_OPENMP)),true)
+# Use the memory leak sanitizer and openmp for all arm targets.
 ifneq ($(filter arm arm64,$(TARGET_ARCH)),)
   ifeq (,$(filter true,$(LOCAL_IS_HOST_MODULE) $(LOCAL_CLANG)))
     ifneq (1,$(words $(DISABLE_SANITIZE_LEAK)))
@@ -83,6 +86,7 @@ ifneq ($(filter arm arm64,$(TARGET_ARCH)),)
       endif
     endif
   endif
+endif
 endif
 
 # Decrease debugging if FORCE_DISABLE_DEBUGGING is true.
