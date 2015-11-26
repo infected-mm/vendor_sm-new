@@ -52,11 +52,10 @@ endif
 
 # Enable SaberMod ARM Mode for all arm builds.
 ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
-  ENABLE_SABERMOD_ARM_MODE := true
-endif
-
-ifeq ($(strip $(ENABLE_SABERMOD_ARM_MODE)),true)
-  OPT4 := [gcc-arm]
+  ifneq ($(ENABLE_SABERMOD_ARM_MODE),false)
+    ENABLE_SABERMOD_ARM_MODE := true
+    OPT4 := [gcc-arm]
+  endif
 endif
 
 ifeq ($(strip $(LOCAL_ARCH)),arm)
@@ -605,7 +604,7 @@ endif
 ifeq ($(strip $(LOCAL_O3)),true)
 
   # Export to the kernel
-export LOCAL_O3 := true
+  export LOCAL_O3 := true
 
   # If -O3 is enabled, force disable on thumb flags.
   # loop optmizations are not really usefull in thumb mode.
@@ -734,8 +733,6 @@ endif
 EXTRA_SABERMOD_HOST_GCC := \
   -ftree-vectorize
 
-EXTRA_SABERMOD_HOST_GCC := 
-
 # Extra SaberMod CLANG C flags
 EXTRA_SABERMOD_CLANG := \
   -ftree-vectorize
@@ -746,7 +743,7 @@ ifndef LOCAL_DISABLE_SABERMOD_GCC_VECTORIZE
 else
   LOCAL_DISABLE_SABERMOD_GCC_VECTORIZE += $(NO_OPTIMIZATIONS)
 endif
-
+toolchain
 # Check if there's already something set somewhere.
 ifndef LOCAL_DISABLE_SABERMOD_CLANG_VECTORIZE
   LOCAL_DISABLE_SABERMOD_CLANG_VECTORIZE := $(NO_OPTIMIZATIONS)
@@ -757,9 +754,22 @@ endif
 # Some flags are only available for certain gcc versions
 export DISABLE_SANITIZE_LEAK := $(filter 4.8%,$(SM_AND_NAME))
 
-OPT3 := [extra]
-OPT6 := [mem-sanitizer]
-OPT7 := [OpenMP]
+# Enable SaberMod extra for all arm builds.
+ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
+  ifneq ($(ENABLE_SABERMOD_EXTRA),false)
+    ENABLE_SABERMOD_EXTRA := true
+    OPT3 := [extra]
+  endif
+endif
+
+# Enable Leak Sanitizer and OpenMP for all arm builds.
+ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
+  ifneq ($(ENABLE_LSAN_OPENMP),false)
+    ENABLE_LSAN_OPENMP := true
+    OPT6 := [lsan]
+    OPT7 := [OpenMP]
+  endif
+endif
 
 # Right all optimization level options to build.prop
 GCC_OPTIMIZATION_LEVELS := $(OPT1)$(OPT2)$(OPT4)$(OPT3)$(OPT6)$(OPT7)$(OPT8)$(OPT5)
