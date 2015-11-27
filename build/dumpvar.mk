@@ -31,6 +31,6 @@ else
 $(info   TARGET_NDK_VERSION=$(SM_AND_VERSION))
 endif
 ifdef GCC_OPTIMIZATION_LEVELS
-$(info   OPTIMIZATION_OPTIONS=$(GCC_OPTIMIZATION_LEVELS))
+$(info   OPTIMIZATIONS=$(GCC_OPTIMIZATION_LEVELS))
 endif
 $(info =====================================================================)
