@@ -17,4 +17,4 @@
 TARGET_SM_KERNEL := 4.9
 TARGET_SM_AND := 4.9
 LOCAL_STRICT_ALIASING := false
-export LOCAL_O3 := true
+export LOCAL_O3 := false
