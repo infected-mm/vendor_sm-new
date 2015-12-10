@@ -17,7 +17,7 @@
 TARGET_SM_AND := 4.9
 TARGET_SM_KERNEL := 4.9
 LOCAL_STRICT_ALIASING := true
-export LOCAL_O3 := true
+export LOCAL_O3 := false
 
 # Configs for ROM on GCC 4.8
 ifeq ($(strip $(TARGET_SM_AND)),4.8)
