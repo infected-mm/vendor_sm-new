@@ -30,7 +30,7 @@ ifneq ($(filter %shamu,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := shamu
 endif
 
-ifneq ($(filter %bacon,$(TARGET_PRODUCT)),)
+ifneq ($(filter %bacon %find7op,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := bacon
 endif
 
