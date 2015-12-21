@@ -31,9 +31,10 @@ endif
 
 ifdef KERNEL_DIR
   include $(KERNEL_DIR)/AndroidKernel.mk
+
+  # cp will do.
+  .PHONY: $(PRODUCT_OUT)/kernel
+  $(PRODUCT_OUT)/kernel: $(TARGET_PREBUILT_KERNEL)
+	cp $(TARGET_PREBUILT_KERNEL) $(PRODUCT_OUT)/kernel
 endif
 
-# cp will do.
-.PHONY: $(PRODUCT_OUT)/kernel
-$(PRODUCT_OUT)/kernel: $(TARGET_PREBUILT_KERNEL)
-	cp $(TARGET_PREBUILT_KERNEL) $(PRODUCT_OUT)/kernel

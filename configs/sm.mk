@@ -118,19 +118,19 @@ ifneq ($(filter arm arm64,$(LOCAL_ARCH)),)
       endif
     endif
 
-ifeq (,$(filter 5.% 6.%,$(TARGET_SM_AND)))
+    ifeq (,$(filter 5.% 6.%,$(TARGET_SM_AND)))
 export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/lib
 export TARGET_ARCH_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/include
-else
+    else
 export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/lib
 export TARGET_ARCH_SECOND_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SECOND_SM_AND)/lib
 export TARGET_ARCH_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)/include
 export TARGET_ARCH_SECOND_INC_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SECOND_SM_AND)/include
-endif
+    endif
 
     # Path to ROM toolchain
     SM_AND_PATH := prebuilts/gcc/$(HOST_PREBUILT_TAG)/arm/arm-linux-androideabi-$(TARGET_SM_AND)
-    SM_AND := $(shell $(SM_AND_PATH)/bin/arm-linux-androideabi-gcc --version)
+    SM_AND := $(shell cat $(SM_AND_PATH)/VERSION)
 
     # Find strings in version info
     ifneq ($(filter %sabermod,$(SM_AND)),)
@@ -295,7 +295,7 @@ export TARGET_ARCH_LIB_PATH := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_PREBUIL
 
     # Path to toolchain
     SM_AND_PATH := prebuilts/gcc/$(HOST_PREBUILT_TAG)/aarch64/aarch64-linux-android-$(TARGET_SM_AND)
-    SM_AND := $(shell $(SM_AND_PATH)/bin/aarch64-linux-android-gcc --version)
+    SM_AND := $(shell cat $(SM_AND_PATH)/VERSION)
 
     # Find strings in version info
     ifneq ($(filter %sabermod,$(SM_AND)),)
