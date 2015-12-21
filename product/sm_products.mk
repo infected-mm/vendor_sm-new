@@ -14,9 +14,6 @@
 #
 
 # Filter device
-ifneq ($(filter %flounder,$(TARGET_PRODUCT)),)
-  TARGET_DEVICE := flounder
-endif
 
 ifneq ($(filter %hammerhead,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := hammerhead
@@ -36,6 +33,14 @@ endif
 
 ifneq ($(filter %baconcaf,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := baconcaf
+endif
+
+ifneq ($(filter %h811,$(TARGET_PRODUCT)),)
+  TARGET_DEVICE := h811
+endif
+
+ifneq ($(filter %flounder,$(TARGET_PRODUCT)),)
+  TARGET_DEVICE := flounder
 endif
 
 # Filter ROM base
