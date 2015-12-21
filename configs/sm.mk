@@ -650,6 +650,11 @@ export EXTRA_SABERMOD_GCC := \
          -ftree-loop-im \
          -ftree-loop-ivcanon
 
+ifeq ($(strip $(LOCAL_ARCH)),arm64)
+export EXTRA_SABERMOD_GCC += \
+         -fsanitize=thread
+endif
+
 EXTRA_SABERMOD_HOST_GCC := \
   -ftree-loop-distribution \
   -ftree-loop-if-convert \
