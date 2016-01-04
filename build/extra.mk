@@ -17,26 +17,28 @@
 
 ifeq ($(strip $(ENABLE_SABERMOD_EXTRA)),true)
 # Target build flags
-ifeq (,$(filter true,$(LOCAL_IS_HOST_MODULE) $(LOCAL_CLANG)))
-  ifdef EXTRA_SABERMOD_GCC_VECTORIZE
-    ifneq (1,$(words $(filter $(LOCAL_DISABLE_SABERMOD_GCC_VECTORIZE),$(LOCAL_MODULE))))
-      ifdef LOCAL_CFLAGS
-        LOCAL_CFLAGS += $(EXTRA_SABERMOD_GCC_VECTORIZE)
-      else
-        LOCAL_CFLAGS := $(EXTRA_SABERMOD_GCC_VECTORIZE)
+ifndef LOCAL_IS_HOST_MODULE
+  ifneq ($(my_clang),true)
+    ifdef EXTRA_SABERMOD_GCC_VECTORIZE
+      ifneq (1,$(words $(filter $(LOCAL_DISABLE_SABERMOD_GCC_VECTORIZE),$(LOCAL_MODULE))))
+        ifdef LOCAL_CFLAGS
+          LOCAL_CFLAGS += $(EXTRA_SABERMOD_GCC_VECTORIZE)
+        else
+          LOCAL_CFLAGS := $(EXTRA_SABERMOD_GCC_VECTORIZE)
+        endif
       endif
     endif
-  endif
-  ifdef LOCAL_CFLAGS
-    LOCAL_CFLAGS += $(EXTRA_SABERMOD_GCC)
-  else
-    LOCAL_CFLAGS := $(EXTRA_SABERMOD_GCC)
+    ifdef LOCAL_CFLAGS
+      LOCAL_CFLAGS += $(EXTRA_SABERMOD_GCC)
+    else
+      LOCAL_CFLAGS := $(EXTRA_SABERMOD_GCC)
+    endif
   endif
 endif
 
 # Clang vectorization flags.
-ifneq ($(strip $(LOCAL_IS_HOST_MODULE)),true)
-  ifeq ($(strip $(LOCAL_CLANG)),true)
+ifndef LOCAL_IS_HOST_MODULE
+  ifeq ($(my_clang),true)
     ifneq (1,$(words $(filter $(LOCAL_DISABLE_SABERMOD_CLANG_VECTORIZE),$(LOCAL_MODULE))))
       ifdef LOCAL_CFLAGS
         LOCAL_CFLAGS += $(LOCAL_SABERMOD_CLANG_VECTORIZE)
@@ -47,41 +49,28 @@ ifneq ($(strip $(LOCAL_IS_HOST_MODULE)),true)
   endif
 endif
 
-# Host gcc flags
-ifeq ($(strip $(LOCAL_IS_HOST_MODULE)),true)
-  ifneq ($(strip $(LOCAL_CLANG)),true)
-    ifdef LOCAL_CFLAGS
-      LOCAL_CFLAGS += $(EXTRA_SABERMOD_HOST_GCC)
-    else
-      LOCAL_CFLAGS := $(EXTRA_SABERMOD_HOST_GCC)
-    endif
-    LOCAL_CFLAGS += $(EXTRA_SABERMOD_HOST_GCC)
-  endif
-endif
-endif
-
 ifeq ($(strip $(ENABLE_LSAN_OPENMP)),true)
 # Use the memory leak sanitizer and openmp for all arm targets.
 ifneq ($(filter arm arm64,$(TARGET_ARCH)),)
-  ifeq (,$(filter true,$(LOCAL_IS_HOST_MODULE) $(LOCAL_CLANG)))
-    ifneq (1,$(words $(DISABLE_SANITIZE_LEAK)))
-      ifneq (1,$(words $(filter $(GCC_4_8_MODULES),$(LOCAL_MODULE))))
+  ifndef LOCAL_IS_HOST_MODULE
+    ifneq ($(my_clang),true)
+      ifneq (1,$(words $(DISABLE_SANITIZE_LEAK)))
         ifdef LOCAL_CONLYFLAGS
           LOCAL_CONLYFLAGS += -fsanitize=leak
         else
           LOCAL_CONLYFLAGS := -fsanitize=leak
         endif
-      endif
-      ifneq (1,$(words $(filter libwebviewchromium libc_netbsd,$(LOCAL_MODULE))))
-        ifdef LOCAL_CFLAGS
-          LOCAL_CFLAGS += -lgomp -ldl -lgcc -fopenmp
-        else
-          LOCAL_CFLAGS := -lgomp -ldl -lgcc -fopenmp
-        endif
-        ifdef LOCAL_LDLIBS
-          LOCAL_LDLIBS += -lgomp -lgcc
-        else
-          LOCAL_LDLIBS := -lgomp -lgcc
+        ifneq (1,$(words $(filter libwebviewchromium libc_netbsd,$(LOCAL_MODULE))))
+          ifdef LOCAL_CFLAGS
+            LOCAL_CFLAGS += -lgomp -ldl -lgcc -fopenmp
+          else
+            LOCAL_CFLAGS := -lgomp -ldl -lgcc -fopenmp
+          endif
+          ifdef LOCAL_LDLIBS
+            LOCAL_LDLIBS += -lgomp -lgcc
+          else
+            LOCAL_LDLIBS := -lgomp -lgcc
+          endif
         endif
       endif
     endif
@@ -91,7 +80,7 @@ endif
 
 # Decrease debugging if FORCE_DISABLE_DEBUGGING is true.
 ifeq ($(filter true 1,$(FORCE_DISABLE_DEBUGGING)),)
-  ifneq ($(strip $(LOCAL_CLANG)),true)
+  ifneq ($(my_clang),true)
     ifneq (1,$(words $(LOCAL_DEBUGGING_WHITELIST)))
       ifdef LOCAL_CFLAGS
         LOCAL_CFLAGS += -g0
@@ -105,4 +94,5 @@ ifeq ($(filter true 1,$(FORCE_DISABLE_DEBUGGING)),)
       endif
     endif
   endif
+endif
 endif
