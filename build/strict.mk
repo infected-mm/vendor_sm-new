@@ -20,7 +20,7 @@
 ifeq ($(strip $(LOCAL_STRICT_ALIASING)),true)
   ifeq ($(strip $(LOCAL_ARM_MODE)),arm)
   arm_objects_mode := $(if $(LOCAL_ARM_MODE),$(LOCAL_ARM_MODE),arm)
-    ifneq ($(strip $(LOCAL_CLANG)),true)
+    ifneq ($(my_clang),true)
       arm_objects_cflags := $($(LOCAL_2ND_ARCH_VAR_PREFIX)$(my_prefix)$(arm_objects_mode)_CFLAGS)
       ifneq ($(filter -fstrict-aliasing,$(arm_objects_cflags)),)
         ifdef LOCAL_CFLAGS
@@ -41,7 +41,7 @@ ifeq ($(strip $(LOCAL_STRICT_ALIASING)),true)
     endif
   endif
   ifeq ($(strip $(TARGET_ARCH)),arm64)
-    ifneq (true,$(strip $(LOCAL_CLANG)))
+    ifneq (true,$(my_clang))
       ifdef LOCAL_CFLAGS
         LOCAL_CFLAGS += $(GCC_STRICT_FLAGS)
       else

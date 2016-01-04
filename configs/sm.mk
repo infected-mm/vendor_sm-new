@@ -655,12 +655,6 @@ export EXTRA_SABERMOD_GCC += \
          -fsanitize=thread
 endif
 
-EXTRA_SABERMOD_HOST_GCC := \
-  -ftree-loop-distribution \
-  -ftree-loop-if-convert \
-  -ftree-loop-im \
-  -ftree-loop-ivcanon
-
 ifdef EXTRA_SABERMOD_GCC_VECTORIZE
 export EXTRA_SABERMOD_GCC_VECTORIZE := \
          $(EXTRA_SABERMOD_GCC_VECTORIZE) \
@@ -732,11 +726,6 @@ else
   LOCAL_DEBUGGING_WHITELIST += \
     $(LOCAL_DEBUGGING_WHITELIST_BASE)
 endif
-
-# Enable some basic host gcc optimizations
-# None that are cpu specific but arch is ok.
-EXTRA_SABERMOD_HOST_GCC := \
-  -ftree-vectorize
 
 # Extra SaberMod CLANG C flags
 EXTRA_SABERMOD_CLANG := \
