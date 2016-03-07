@@ -15,8 +15,8 @@
 
 # Sabermod configs
 TARGET_SM_KERNEL := 4.9
-HUASHAN_THREADS := 2
-PRODUCT_THREADS := $(HUASHAN_THREADS)
+LEO_THREADS := 4
+PRODUCT_THREADS := $(LEO_THREADS)
 LOCAL_STRICT_ALIASING := true
 LOCAL_O3 := false
 
@@ -36,9 +36,33 @@ LOCAL_DISABLE_GRAPHITE := libncurses
     -ftree-parallelize-loops=$(PRODUCT_THREADS) \
     -fopenmp
 
+  ifneq ($(filter 5% 6%,$(TARGET_SM_AND)),)
+    LOCAL_DISABLE_GRAPHITE := \
+      camera.msm8974
+  endif
+
 # General flags for gcc 4.9 to allow compilation to complete.
-NO_OPTIMIZATIONS := hwcomposer.msm8960
+MAYBE_UNINITIALIZED := \
+  hwcomposer.msm8974
 
 # Extra SaberMod GCC C flags for arch target and Kernel
 export EXTRA_SABERMOD_GCC_VECTORIZE := \
          -mvectorize-with-neon-quad
+
+ifeq ($(strip $(ENABLE_STRICT_ALIASING)),true)
+
+  # Enable strict-aliasing kernel flags
+export CONFIG_MACH_MSM8974_LEO_STRICT_ALIASING := y
+
+  # Check if something is already set in product/sm_products.mk
+  ifndef LOCAL_DISABLE_STRICT_ALIASING
+    LOCAL_DISABLE_STRICT_ALIASING := \
+      libmmcamera_interface \
+      camera.msm8974
+  else
+    LOCAL_DISABLE_STRICT_ALIASING += \
+      libmmcamera_interface \
+      camera.msm8974
+  endif
+endif
+
