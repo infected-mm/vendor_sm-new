@@ -18,7 +18,7 @@ ifneq (,$(TARGET_DEVICE))
   ifeq (1,$(words $(filter hammerhead mako shamu bacon baconcaf, $(TARGET_DEVICE))))
     LOCAL_ARCH := arm
   endif
-  ifeq (1,$(words $(filter h811 founder, $(TARGET_DEVICE))))
+  ifeq (1,$(words $(filter sumire h811 founder, $(TARGET_DEVICE))))
     LOCAL_ARCH := arm64
   endif
 endif
@@ -26,10 +26,10 @@ endif
 # Kernel binary prefix.  The other part of this will go in the kernel source's AndroidKernel.mk.
 # And also in defconfigs (arch/arm/configs/name_defconfig)(or arm64) CONFIG_CROSS_COMPILE="arm-eabi-" (or "aarch64-")
 ifeq ($(strip $(LOCAL_ARCH)),arm)
-export CROSS_COMPILE_NAME := arm-linux-gnueabi-
+export CROSS_COMPILE_NAME := arm-eabi-
 endif
 
 ifeq ($(strip $(LOCAL_ARCH)),arm64)
-export CROSS_COMPILE_NAME := aarch64-linux-gnu-
+export CROSS_COMPILE_NAME := aarch64-linux-android-
 endif
 

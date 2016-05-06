@@ -29,6 +29,14 @@ ifneq ($(filter %shamu,$(TARGET_PRODUCT)),)
   endif
 endif
 
+ifneq ($(filter %sumire,$(TARGET_PRODUCT)),)
+  KERNEL_DIR := kernel/sony/msm
+  KERNEL_BINARY_IMAGE := zImage-dtb
+  ifneq ($(filter omni% aosp% carbon%,$(TARGET_PRODUCT)),)
+    KERNEL_DEFCONFIG := aosp_kitakami_sumire_defconfig
+  endif
+endif
+
 ifdef KERNEL_DIR
   include $(KERNEL_DIR)/AndroidKernel.mk
 

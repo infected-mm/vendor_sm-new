@@ -13,13 +13,14 @@
 # limitations under the License.
 #
 
-# Android ROM toolchain.
-# This can still be overridden in device/sm_device.mk
+# Sabermod configs
+TARGET_SM_KERNEL := 4.9
 TARGET_SM_AND := 4.9
+SUMIRE_THREADS := 8
+PRODUCT_THREADS := $(SUMIRE_THREADS)
+LOCAL_STRICT_ALIASING := false
+LOCAL_O3 := true
 
-# Assume that busybox is bundled in with all customized ROMs.
-# If need be, there is a fork of cyanogenmod busybox on gitlab, that will work on any ROM build type.
-# See https://gitlab.com/SaberMod/android-external-busybox
-
-#PRODUCT_PACKAGES += \
-#  busybox
+GRAPHITE_KERNEL_FLAGS := \
+  -floop-parallelize-all \
+  -ftree-parallelize-loops=$(PRODUCT_THREADS)

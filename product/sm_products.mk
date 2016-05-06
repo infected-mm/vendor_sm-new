@@ -39,12 +39,16 @@ ifneq ($(filter %h811,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := h811
 endif
 
+ifneq ($(filter %sumire,$(TARGET_PRODUCT)),)
+  TARGET_DEVICE := sumire
+endif
+
 ifneq ($(filter %flounder,$(TARGET_PRODUCT)),)
   TARGET_DEVICE := flounder
 endif
 
 # Filter ROM base
-ifneq ($(filter aosp% boostpop% pa% twisted% rnx%,$(TARGET_PRODUCT)),)
+ifneq ($(filter aosp% omni% carbon%,$(TARGET_PRODUCT)),)
   TARGET_BASE_ROM := aosp
   include $(SM_VENDOR)/product/aosp_product.mk
 endif
@@ -52,11 +56,6 @@ endif
 ifneq ($(filter slim% aicp% cm%,$(TARGET_PRODUCT)),)
   TARGET_BASE_ROM := cm
   include $(SM_VENDOR)/product/cm_product.mk
-endif
-
-# PA
-ifneq ($(filter pa%,$(TARGET_PRODUCT)),)
-  NO_OTA_BUILD := true
 endif
 
 # General ROM strings
